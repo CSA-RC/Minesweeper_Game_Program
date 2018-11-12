@@ -29,7 +29,7 @@ class Minesweeper:
 
     def easy(self):
         self.mine = 20
-        self.size = 10
+        self.size = 12
         self.label.destroy()
         self.easystart.destroy()
         self.mediumstart.destroy()
@@ -38,7 +38,7 @@ class Minesweeper:
 
     def medium(self):
         self.mine = 45
-        self.size = 15
+        self.size = 17
         self.label.destroy()
         self.easystart.destroy()
         self.mediumstart.destroy()
@@ -47,7 +47,7 @@ class Minesweeper:
 
     def hard(self):
         self.mine = 80
-        self.size = 20
+        self.size = 22
         self.label.destroy()
         self.easystart.destroy()
         self.mediumstart.destroy()

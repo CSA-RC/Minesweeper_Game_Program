@@ -63,7 +63,7 @@ class Minesweeper:
 
         for x in range(0, self.size):
             for y in range(0, self.size):
-                self.button_dict[f"{x}, {y}"] = Button(text="", height=1, width=2)
+                self.button_dict[f"{x}, {y}"] = Button(text="", height=1, width=2, background="gray95")
                 self.button_dict[f"{x}, {y}"].bind("<ButtonPress-1>", self.minesweeperclick)
                 self.button_dict[f"{x}, {y}"].bind("<ButtonRelease-3>", self.flag)
                 self.button_dict[f"{x}, {y}"].grid(column=x, row=y)
@@ -93,7 +93,12 @@ class Minesweeper:
             y = int(event.y_root) - int(root_y)
             if x in range(int(button_x), (int(button_x) + int(button_length)))\
                     and y in range(int(button_y), (int(button_y) + int(button_height))):
-                button.config(state="disabled", relief="sunken", text="*")
+                button.config(text="*", relief="sunken")
+                for x in range(0, self.size):
+                    for y in range(0, self.size):
+                        self.button_dict[f"{x}, {y}"].unbind("<ButtonPress-1>")
+                        self.button_dict[f"{x}, {y}"].unbind("<ButtonRelease-3>")
+                        self.button_dict[f"{x}, {y}"].config(state="disabled")
                 root.update()
                 self.losescreen()
                 break
@@ -104,7 +109,7 @@ class Minesweeper:
         lose.title("Minesweeper")
         msg = Message(lose, text="You Lose.")
         msg.pack()
-        closebutton = Button(lose, text="Close", command = self.close)
+        closebutton = Button(lose, text="Close", command=self.close)
         closebutton.pack()
 
     def flag(self, event):
@@ -119,7 +124,7 @@ class Minesweeper:
             if x in range(int(button_x), (int(button_x) + int(button_length)))\
                     and y in range(int(button_y), (int(button_y) + int(button_height))):
                 if self.flagcount > 0:
-                    button.config(relief="ridge", state="disabled", text="F")
+                    button.config(relief="ridge", state="disabled", text="F", background="red")
                     self.flagcount -= 1
                     self.buttonlabel.config(text=("Flags Remaining: %s" % self.flagcount))
                 if button in self.mines:
@@ -157,7 +162,7 @@ class Minesweeper:
                     and y in range(int(button_y), (int(button_y) + int(button_height))):
                 self.flagcount += 1
                 self.buttonlabel.config(text=("Flags Remaining: %s" % self.flagcount))
-                button.config(relief="raised", state="disabled", text="")
+                button.config(relief="raised", state="disabled", text="", background='gray95')
                 button.unbind("<ButtonRelease-3>")
                 button.bind("<ButtonPress-1>", self.minesweeperclick)
                 button.bind("<ButtonRelease-3>", self.flag)

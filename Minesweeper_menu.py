@@ -1,9 +1,24 @@
-"""Minesweeper version 0.2.2 made by Ryan Callahan"""
+"""
+    Minesweeper_menu version 2.2.5 allows users to play a game of minesweeper
+    in either easy, medium, or hard difficulty.
+    Copyright (C) 2018  Ryan I Callahan
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
 
 from tkinter import *
-from tkinter import ttk
 import random
-import time
 
 root = Tk()
 
@@ -13,7 +28,7 @@ class Minesweeper:
         root.title("Minesweeper")
         self.button_dict = dict()
 
-        self.label = Label(text="MINESWEEPER\n-------------\nChoose A Difficulty\n-------------")
+        self.label = Label(text="MINESWEEPER\n-------------\nInstructions: \nLeft click to reveal square\nRight click to flag/unflag\nFlag all mines to win\nNumbers = amount of mines touching square\n-------------\nChoose A Difficulty\n-------------")
         self.label.grid(columnspan=3, column=1, row=1, sticky='w')
         self.easystart = Button(text="Easy", command=self.easy)
         self.easystart.grid(column=1, row=2)
@@ -105,7 +120,7 @@ class Minesweeper:
 
     def losescreen(self):
         lose = Toplevel()
-        lose.geometry('50x50')
+        lose.geometry('50x60')
         lose.title("Minesweeper")
         msg = Message(lose, text="You Lose.")
         msg.pack()
@@ -123,18 +138,19 @@ class Minesweeper:
             y = int(event.y_root) - int(root_y)
             if x in range(int(button_x), (int(button_x) + int(button_length)))\
                     and y in range(int(button_y), (int(button_y) + int(button_height))):
-                if self.flagcount > 0:
-                    button.config(relief="ridge", state="disabled", text="F", background="red")
-                    self.flagcount -= 1
-                    self.buttonlabel.config(text=("Flags Remaining: %s" % self.flagcount))
-                if button in self.mines:
-                    self.minecount -= 1
-                    if self.minecount == 0:
-                        self.winscreen()
-                        break
-                button.unbind("<ButtonPress-1>")
-                button.unbind("<ButtonRelease-3>")
-                button.bind("<ButtonRelease-3>", self.unflag)
+                if button.cget("relief") == "raised":
+                    if self.flagcount > 0:
+                        button.config(relief="ridge", state="disabled", text="F", background="red")
+                        self.flagcount -= 1
+                        self.buttonlabel.config(text=("Flags Remaining: %s" % self.flagcount))
+                    if button in self.mines:
+                        self.minecount -= 1
+                        if self.minecount == 0:
+                            self.winscreen()
+                            break
+                    button.unbind("<ButtonPress-1>")
+                    button.unbind("<ButtonRelease-3>")
+                    button.bind("<ButtonRelease-3>", self.unflag)
 
     def winscreen(self):
         win = Toplevel()
@@ -164,8 +180,12 @@ class Minesweeper:
                 self.buttonlabel.config(text=("Flags Remaining: %s" % self.flagcount))
                 button.config(relief="raised", state="disabled", text="", background='gray95')
                 button.unbind("<ButtonRelease-3>")
-                button.bind("<ButtonPress-1>", self.minesweeperclick)
+                if button in self.mines:
+                    button.bind("<ButtonPress-1>", self.boom)
+                else:
+                    button.bind("<ButtonPress-1>", self.minesweeperclick)
                 button.bind("<ButtonRelease-3>", self.flag)
+
 
 
     def minesweeperclick(self, event):

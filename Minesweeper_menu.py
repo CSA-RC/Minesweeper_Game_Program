@@ -29,13 +29,15 @@ class Minesweeper:
         self.button_dict = dict()
 
         self.label = Label(text="MINESWEEPER\n-------------\nInstructions: \nLeft click to reveal square\nRight click to flag/unflag\nFlag all mines to win\nNumbers = amount of mines touching square\n-------------\nChoose A Difficulty\n-------------")
-        self.label.grid(columnspan=3, column=1, row=1, sticky='w')
+        self.label.grid(columnspan=4, column=1, row=1, sticky='w')
         self.easystart = Button(text="Easy", command=self.easy)
         self.easystart.grid(column=1, row=2)
         self.mediumstart = Button(text="Medium", command=self.medium)
         self.mediumstart.grid(column=2, row=2)
         self.hardstart = Button(text="Hard", command=self.hard)
         self.hardstart.grid(column=3, row=2)
+        self.customstart = Button(text="Custom", command=self.custom)
+        self.customstart.grid(column=4, row=2)
 
         self.mine = 1
         self.size = 5
@@ -49,6 +51,7 @@ class Minesweeper:
         self.easystart.destroy()
         self.mediumstart.destroy()
         self.hardstart.destroy()
+        self.customstart.destroy()
         self.create()
 
     def medium(self):
@@ -58,6 +61,7 @@ class Minesweeper:
         self.easystart.destroy()
         self.mediumstart.destroy()
         self.hardstart.destroy()
+        self.customstart.destroy()
         self.create()
 
     def hard(self):
@@ -67,7 +71,65 @@ class Minesweeper:
         self.easystart.destroy()
         self.mediumstart.destroy()
         self.hardstart.destroy()
+        self.customstart.destroy()
         self.create()
+
+    def custom(self):
+        m=15
+        s=10
+        mc = []
+        sc = []
+        for x in range(0, 38):
+            mc.append(m)
+            m+=5
+        for x in range(0, 11):
+            sc.append(s)
+            s+=2
+
+        self.easystart.destroy()
+        self.mediumstart.destroy()
+        self.hardstart.destroy()
+        self.customstart.destroy()
+        self.label.config(text="MINESWEEPER\n"
+                                "-------------\n"
+                                "Input Preference\n"
+                                "-------------")
+        self.mlabel = Label(text="Number of Mines: ")
+        self.mlabel.grid(column=1, row=2)
+        self.spinmines = Spinbox(values=mc, state='readonly')
+        self.spinmines.grid(column=2, row=2)
+        self.mslabel = Label(text="Size of Grid: ")
+        self.mslabel.grid(column=1, row=3)
+        self.spinsize = Spinbox(values=sc, state='readonly')
+        self.spinsize.grid(column=2, row=3)
+        self.begin = Button(text="Begin", command=self.custombegin)
+        self.begin.grid(column=1, row=4)
+
+    def custombegin(self):
+        self.mine = int(self.spinmines.get())
+        self.size = int(self.spinsize.get())
+        #self.label.destroy()
+        self.easystart.destroy()
+        self.mediumstart.destroy()
+        self.hardstart.destroy()
+        self.customstart.destroy()
+        self.mlabel.destroy()
+        self.mslabel.destroy()
+        self.spinmines.destroy()
+        self.spinsize.destroy()
+        self.begin.destroy()
+
+        if (float((self.size**2))/float(self.mine)) <= (8.0):
+            self.label.destroy()
+            self.create()
+        else:
+            self.custom()
+            self.label.config(text="MINESWEEPER\n"
+                                "-------------\n"
+                                "Please add more mines, or make the size smaller.\n"
+                                "Input Preference\n"
+                                "-------------\n")
+
 
     def create(self):
         self.minecount = self.mine
@@ -249,10 +311,10 @@ class Minesweeper:
                 except KeyError:
                     pass
                 if adjacentmines == 0:
-                    button.config(relief="sunken", text="", state="disabled")
+                    button.config(relief="sunken", text="", state="disabled", background='gray87')
                     self.blankspacecalculate(button)
                 else:
-                    button.config(relief="sunken", text=adjacentmines, state="disabled")
+                    button.config(relief="sunken", text=adjacentmines, state="disabled", background='gray87')
 
     def blankspacecalculate(self, button):
         for list in self.button_dict.items():
